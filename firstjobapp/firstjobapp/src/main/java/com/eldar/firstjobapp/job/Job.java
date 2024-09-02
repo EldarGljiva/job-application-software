@@ -9,9 +9,6 @@ public class Job {
     private Double maxSalary;
     private String location;
 
-    // Default constructor
-    public Job() {}
-
     // Parameterized constructor
     public Job(Long id, String title, String description, Double minSalary, Double maxSalary, String location) {
         this.id = id;
