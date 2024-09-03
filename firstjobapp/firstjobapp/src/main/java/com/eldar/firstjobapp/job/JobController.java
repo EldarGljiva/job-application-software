@@ -1,14 +1,14 @@
 package com.eldar.firstjobapp.job;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/jobs")
 public class JobController {
     private JobService jobService;
 
@@ -16,15 +16,44 @@ public class JobController {
         this.jobService = jobService;
     }
 
-    @GetMapping("/jobs")
-    public List<Job> findAllJobs() {
-        return jobService.findAll();
+    @GetMapping
+    public ResponseEntity<List<Job>> findAllJobs() {
+        return new ResponseEntity<>(jobService.findAll(),HttpStatus.OK);
     }
 
 
-    @PostMapping("/jobs")
-    public String createJob(@RequestBody Job job) {
+    @PostMapping
+    public ResponseEntity<String> createJob(@RequestBody Job job) {
         jobService.createJob(job);
-        return "Job added succesfully";
+        return new ResponseEntity<>("Job added succesfully", HttpStatus.OK);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Job> getJobById(@PathVariable Long id){
+        Job job = jobService.getJobById(id);
+       if(job!=null)
+           return new ResponseEntity<>(job, HttpStatus.OK);
+       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteJob(@PathVariable Long id){
+        String response = jobService.deleteJob(id);
+        if(response!=null){
+            return new ResponseEntity<>("Job Deleted Succesfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Job with specified id not found", HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateJob(@PathVariable Long id, @RequestBody Job updatedJob){
+        String response = jobService.updateJob(id, updatedJob);
+        if(response!=null){
+            return new ResponseEntity<>("Job Updated Succesfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Job with specified id not found", HttpStatus.NOT_FOUND);
+    }
+
+
 }
