@@ -1,6 +1,7 @@
 package com.eldar.firstjobapp.job.impl;
 
 import com.eldar.firstjobapp.job.Job;
+import com.eldar.firstjobapp.job.JobRepository;
 import com.eldar.firstjobapp.job.JobService;
 import org.springframework.stereotype.Service;
 
@@ -9,53 +10,47 @@ import java.util.List;
 
 @Service
 public class JobServiceImpl implements JobService {
-
-    private List<Job> jobs = new ArrayList<>();
+    //private List<Job> jobs = new ArrayList<>();
+    JobRepository jobRepository;
     private Long nextId = 1L;
+
+    public JobServiceImpl(JobRepository jobRepository) {
+        this.jobRepository = jobRepository;
+    }
 
     @Override
     public List<Job> findAll() {
-        return jobs;
+        return jobRepository.findAll();
     }
 
     @Override
     public void createJob(Job job) {
         job.setId(nextId++);
-        jobs.add(job);
+        jobRepository.save(job);
     }
 
     @Override
     public Job getJobById(Long id){
-    for(Job job : jobs){
-    if(job.getId().equals(id)){
-        return job;
-    }
-    }
-        return null;
+    return jobRepository.findById(id).orElse(null);
     }
 
     @Override
     public String deleteJob(Long id){
-
-        for(Job job : jobs){
-            if(job.getId().equals(id)){
-               jobs.remove(job);
-               return "Job deleted Succesfully";
-            }
-        }
-        return null;
+        jobRepository.deleteById(id);
+        return "Job deleted Succesfully";
     }
 
     @Override
-    public String updateJob(Long id, Job updatedJob){
-        for(Job job : jobs){
-            if(job.getId().equals(id)){
-                jobs.set(jobs.indexOf(job), updatedJob);
-                return "Job updated Succesfully";
-            }
-        }
-        return null;
+    public String updateJob(Long id, Job updatedJob) {
+        return jobRepository.findById(id)
+                .map(existingJob -> {
+                    updatedJob.setId(id); // Ensure the ID remains the same
+                    jobRepository.save(updatedJob); // Save the updated job
+                    return "Job updated successfully";
+                })
+                .orElse("Job with specified id not found");
     }
+
 
 
 }
