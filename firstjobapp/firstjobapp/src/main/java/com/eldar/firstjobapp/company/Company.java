@@ -1,6 +1,7 @@
 package com.eldar.firstjobapp.company;
 
 import com.eldar.firstjobapp.job.Job;
+import com.eldar.firstjobapp.review.Review;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -18,7 +19,16 @@ public class Company {
     @OneToMany(mappedBy = "company") // Mapped by company entity and no additional table is needed to manage this relationship
     private List<Job> jobs;
 
-    // private List<Review> reviews;
+    @OneToMany(mappedBy = "company")
+    private List<Review> reviews;
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
 
     // for jpa
     public Company() {

@@ -44,7 +44,7 @@ public class CompanyController {
         return new ResponseEntity<>("company with specified id NOT DELETED", HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<Company> updateCompanyById(@PathVariable Long id){
         Company company = companyService.getCompanyById(id);
         if(company!=null){
@@ -52,4 +52,5 @@ public class CompanyController {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
 }
